@@ -1,85 +1,61 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Jan 14 13:44:00 2016
-
-This file shows some simple (and buggy) python code to solve the Triangles assignment.   
-The primary goal of this file is to demonstrate a simple python program and the use of the
-unittest package.
-
-Note that this code includes intentional errors for you to find.
-
-
-@author: jrr
-"""
-
-import unittest     # this makes Python unittest module available
+import unittest     
 import math
 
 
 def classifyTriangle(a, b, c):
-    """
-
-    This function returns a string with the type of triangle from three  values
-    corresponding to the lengths of the three sides of the Triangle.
-
-    return:
-        If all three sides are equal, return 'Equilateral'
-        If exactly one pair of sides are equal, return 'Isoceles'
-        If no pair of  sides are equal, return 'Scalene'
-        If not a valid triangle, then return 'NotATriangle'
-        If the sum of any two sides equals the squate of the third side, then return 'Right'
-    """
     array = [a, b, c]
     array.sort()
 
-    # Note: This code is completely bogus but demonstrates a few features of python
     if array[0]+array[1] <= array[2]:
         return 'NotATriangle'
     elif a == b and b == c:
         return 'Equilateral'
-    elif a == b:
-        return 'Isoceles'
-    elif array[0] < array[1] and array[1] < array[2]:
-        return 'Scaline'
+    elif a == b or b == c:
+        return 'Isosceles'
     elif array[0]**2+array[1]**2 == array[2]**2:
         return 'Right'
-
+    elif array[0] < array[1] and array[1] < array[2]:
+        return 'Scaline'
 
 def runClassifyTriangle(a, b, c):
     """ invoke classifyTriangle with the specified arguments and print the result """
     print('classifyTriangle(', a, ',', b, ',', c, ')=',
           classifyTriangle(a, b, c), sep="")
 
-
-# The remainder of this code implements the unit test functionality
-
-# https://docs.python.org/3/library/unittest.html has a nice description of the framework
-
 class TestTriangles(unittest.TestCase):
-    # define multiple sets of tests as functions with names that begin
-    # with 'test'.  Each function may include multiple tests
-    def testSet1(self):  # test invalid inputs
-        # your tests go here.  Include as many tests as you'd like
+    def testRightTriangles(self):
         self.assertEqual(classifyTriangle(3, 4, 5), 'Right',
                          '3,4,5 is a Right triangle')
+        self.assertEqual(classifyTriangle(1, 1, math.sqrt(2)), 'Right',
+                         '1,1,sqrt(2) is a Right triangle')
 
-    def testMyTestSet2(self):
-        # define multiple test sets to test different aspects of the code
-        # notice that tests can have bugs too!
-        self.assertEqual(classifyTriangle(1, 1, 1),
-                         'Equilateral', '1,1,1 should be equilateral')
-        self.assertNotEqual(classifyTriangle(10, 10, 10),
-                            'Isoceles', 'Should be Equilateral')
+    def testEqualTriangle(self):
+        self.assertEqual(classifyTriangle(1, 1, 1), 'Equilateral',
+                         '1,1,1 is an Equilateral Triangle')
+        self.assertEqual(classifyTriangle(99999999, 99999999, 99999999), 'Equilateral',
+                         '99999999,99999999,99999999 is an Equilateral Triangle')
+        self.assertNotEqual(classifyTriangle(-1, -1, -1), 'Equilateral',
+                            '-1,-1,-1 is not an Equilateral Triangle')
+
+    def testIsoscelesTris(self):
+        self.assertEqual(classifyTriangle(1, 1, math.sqrt(2)), 'Isosceles',
+                         '1,1,sqrt(2) is an Isosceles')
+        self.assertEqual(classifyTriangle(1, 2, 2), 'Isosceles',
+                         '1,1000,1000 is an Isosceles')
+
+    def testScalineTris(self):
+        self.assertEqual(classifyTriangle(7, 12, 15), 'Scaline',
+                         '1,1,sqrt(2) is an Scaline')
+        self.assertEqual(classifyTriangle(7, 13, 14), 'Scaline',
+                         '1,1,sqrt(2) is an Scaline')
+
+    def testNotATriangle(self):
+        self.assertEqual(classifyTriangle(-1, -1, -1), 'NotATriangle',
+                         '-1,-1,-1 is a Not a Triangle')
         self.assertEqual(classifyTriangle(10, 15, 30),
-                         'Scalene', 'Should be Isoceles')
+                         'NotATriangle', '10,15,30 is a Not a Triangle')
 
 
 if __name__ == '__main__':
-    # examples of running the code
-    # runClassifyTriangle(1, 2, 3)
-    # runClassifyTriangle(1, 1, 1)
-
-    # this runs all of the tests - use this line if running from Spyder
-    # unittest.main(exit=False)
-    # this runs all of the tests - use this line if running from the command line
     unittest.main(exit=True)
